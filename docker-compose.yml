@@ -1,0 +1,26 @@
+services:
+  app:
+    image: accel33/backend-test:latest
+    container_name: backend-test
+    ports:
+      - '5500:5500'
+    environment:
+      - MONGO_URI=mongodb://root:dev@mongo:27017/?authSource=admin
+      - PORT=5500
+    command: ['npm', 'start']
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: dev
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
