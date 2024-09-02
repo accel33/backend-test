@@ -1,6 +1,7 @@
 # Reto Tecnico Kambista (Bitacora)
 
 ![Kambista](/Images/Kambista.png)
+
 Se requiere hacer un servidor con las funcionalidades para contabilizar las horas o en este caso minutos, de los vehiculos cuando ingresan al estacionamiento.
 
 Se ha decidido hacer los nombramientos (variables, entidades, metodos, rutas) en español para facilitar el entendimiento del programa para futuros desarrolladores.
