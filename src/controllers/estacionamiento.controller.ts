@@ -46,8 +46,6 @@ export class EstacionamientoController {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       where: {vehiculoPlaca: request.vehiculoPlaca, horaSalida: null as any},
     });
-    console.log('placa', request.vehiculoPlaca);
-    console.log('Estacionamiento existente', registroExistente);
 
     if (registroExistente && !registroExistente.horaSalida) {
       throw new HttpErrors.Conflict('El vehiculo ya se encuentra estacionado');
@@ -55,7 +53,6 @@ export class EstacionamientoController {
 
     // Buscar Vehiculo, si no existe, crearlo
     let vehiculo = await this.vehiculoRepository.findOne({where: {placa: request.vehiculoPlaca}});
-    console.log('Vehiculo', vehiculo);
     if (!vehiculo) {
       vehiculo = await this.vehiculoRepository.create({
         placa: request.vehiculoPlaca,
@@ -64,7 +61,6 @@ export class EstacionamientoController {
 
     // Crear estancia
     const estancia = await this.estacionamientoRepository.create({vehiculoPlaca: vehiculo.placa});
-    console.log('estancia', estancia);
 
     return estancia;
   }
@@ -79,30 +75,22 @@ export class EstacionamientoController {
       where: {vehiculoPlaca: placa},
       order: ['horaEntrada DESC'],
     });
-    console.log('Estacionamiento existente', registroExistente);
     if (!registroExistente) {
       throw new HttpErrors.NotFound('El vehiculo no se encuentra estacionado');
     }
-    console.log('Hora de salida', registroExistente.horaSalida);
     if (registroExistente.horaSalida) {
       throw new HttpErrors.Conflict('El vehiculo ya salio del estacionamiento');
     }
 
     // Agregar la hora de salida y la duracion
     registroExistente.horaSalida = new Date().toISOString();
-    console.log('Estacionamiento existente2', registroExistente);
     const duracion =
       new Date(registroExistente.horaSalida).getTime() - new Date(registroExistente.horaEntrada).getTime();
-    console.log('Duracion', duracion);
     registroExistente.duracionEnMinutos = duracion / 60000;
-    console.log('Duracion en minutos', registroExistente.duracionEnMinutos);
-    console.log('Estacionamiento existente3', registroExistente);
 
     // Actualizar y calcular los pagos
     await this.estacionamientoRepository.updateById(registroExistente.id, registroExistente);
-    console.log('Exito actualizado');
     const vehiculo = await this.vehiculoRepository.findById(registroExistente.vehiculoPlaca);
-    console.log('Vehiculo', vehiculo);
 
     if (vehiculo.tipoVehiculo === TipoVehiculo.OFICIAL) {
       return {
@@ -127,7 +115,6 @@ export class EstacionamientoController {
 
     // Calcular duracion en minutos
     const montoPagar = (duracion / 60000) * PagoVehiculo.NO_RESIDENTE;
-    console.log('pago', montoPagar);
 
     return {
       message: 'Salida de vehiculo No Residente registrada',

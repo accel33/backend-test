@@ -4,13 +4,10 @@ import * as dotenv from 'dotenv';
 
 dotenv.config(); // Load .env file
 
-console.log(process.env.MONGO_URI);
 const config = {
   name: 'mongodb',
   connector: 'mongodb',
   url: process.env.MONGO_URI || 'mongodb://root:dev@mongo:27017/?authSource=admin',
-  // url: process.env.MONGO_URI || 'mongodb://mongodb:27017/node-boilerplate',
-  // url: 'mongodb+srv://accel:12345@cluster0.kzwanpq.mongodb.net/testdb?retryWrites=true&w=majority',
   useNewUrlParser: true,
 };
 
